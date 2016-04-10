@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:background="@color/global_gray_bg"
+              android:orientation="vertical">
+
+    <include layout="@layout/layout_toolbar"/>
+
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/sw_refresh"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+
+            <RadioGroup
+                android:id="@+id/rg_album"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:layout_marginLeft="40dp"
+                android:layout_marginRight="40dp"
+                android:layout_marginTop="10dp"
+                android:orientation="horizontal">
+
+                <RadioButton
+                    android:id="@+id/rb_class_album"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/selector_album_left_radius_button"
+                    android:button="@null"
+                    android:gravity="center"
+                    android:padding="5dp"
+                    android:text="@string/class_album"
+                    android:textColor="@drawable/btn_text_style"/>
+
+                <RadioButton
+                    android:id="@+id/rb_kindergarten_album"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:background="@drawable/selector_album_right_radius_button"
+                    android:button="@null"
+                    android:gravity="center"
+                    android:padding="5dp"
+                    android:text="@string/kindergarten_album"
+                    android:textColor="@drawable/btn_text_style"/>
+            </RadioGroup>
+
+            <FrameLayout
+                android:id="@+id/fl_album_main"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"/>
+        </LinearLayout>
+    </android.support.v4.widget.SwipeRefreshLayout>
+</LinearLayout>

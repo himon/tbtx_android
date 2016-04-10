@@ -1,17 +1,79 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    tools:context="com.buddysoft.tbtx_android.MainActivity">
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@color/global_gray_bg">
 
-    <TextView
-        android:text="Hello World!"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+    <FrameLayout
+        android:id="@+id/frame_main"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/rg_menu"/>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:layout_above="@+id/rg_menu"
+        android:background="@color/tab_gray_line"/>
+
+    <RadioGroup
+        android:id="@+id/rg_menu"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="horizontal">
+
+        <RadioButton
+            android:id="@+id/rb_home"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginTop="5dp"
+            android:layout_weight="1"
+            android:button="@null"
+            android:drawableTop="@drawable/check_home"
+            android:gravity="center"
+            android:text="@string/home"
+            android:textColor="@drawable/check_text_style"
+            android:textSize="12sp"/>
+
+        <RadioButton
+            android:id="@+id/rb_msg"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginTop="5dp"
+            android:layout_weight="1"
+            android:button="@null"
+            android:drawableTop="@drawable/check_msg"
+            android:gravity="center"
+            android:text="@string/msg"
+            android:textColor="@drawable/check_text_style"
+            android:textSize="12sp"/>
+
+        <RadioButton
+            android:id="@+id/rb_friend"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginTop="5dp"
+            android:layout_weight="1"
+            android:button="@null"
+            android:drawableTop="@drawable/check_friend"
+            android:gravity="center"
+            android:text="@string/share"
+            android:textColor="@drawable/check_text_style"
+            android:textSize="12sp"/>
+
+        <RadioButton
+            android:id="@+id/rb_user"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_marginTop="5dp"
+            android:layout_weight="1"
+            android:button="@null"
+            android:drawableTop="@drawable/check_user"
+            android:gravity="center"
+            android:text="@string/user"
+            android:textColor="@drawable/check_text_style"
+            android:textSize="12sp"/>
+    </RadioGroup>
+
 </RelativeLayout>
