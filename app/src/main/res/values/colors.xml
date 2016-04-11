@@ -5,6 +5,7 @@
     <color name="colorAccent">#FF4081</color>
     
     <color name="global_gray_bg">#f3f3f4</color>
+    <color name="gray_bg">#D4D4D4</color>
     <color name="tab_gray_line">#EAEBEB</color>
 
     <color name="main_red">#DB5332</color>
@@ -14,4 +15,5 @@
 
     <color name="red_font_text">#DB2023</color>
     <color name="black_font_text">#3D4346</color>
+    <color name="blue_font_text">#2E91FB</color>
 </resources>

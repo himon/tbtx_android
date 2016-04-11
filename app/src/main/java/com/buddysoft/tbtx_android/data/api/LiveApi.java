@@ -55,4 +55,12 @@ public interface LiveApi {
     @POST("album/index")
     Observable<AlbumEntity> album(@Field("kindergartenId") String kindergartenId, @Field("classId") String classId, @Field("createdAt") String createdAt, @Field("name") String name);
 
+    /**
+     * 创建相册
+     *
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("album/create")
+    Observable<AlbumEntity> createAlbum(@Field("kindergartenId") String kindergartenId, @Field("classId") String classId, @Field("name") String name, @Field("cover") String cover, @Field("operatorId") String operatorId);
 }

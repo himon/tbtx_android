@@ -1,11 +1,13 @@
 package com.buddysoft.tbtx_android.ui.activity.album;
 
+import android.content.Intent;
 import android.os.Handler;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.MenuItem;
 import android.widget.FrameLayout;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
@@ -14,11 +16,13 @@ import com.buddysoft.tbtx_android.R;
 import com.buddysoft.tbtx_android.app.C;
 import com.buddysoft.tbtx_android.app.TbtxApplication;
 import com.buddysoft.tbtx_android.data.entity.AlbumEntity;
+import com.buddysoft.tbtx_android.data.event.AlbumSearchEvent;
 import com.buddysoft.tbtx_android.ui.base.ToolbarActivity;
 import com.buddysoft.tbtx_android.ui.fragment.album.AlbumListFragment;
 import com.buddysoft.tbtx_android.ui.module.AlbumListActivityModule;
 import com.buddysoft.tbtx_android.ui.presenter.AlbumListActivityPresenter;
 import com.buddysoft.tbtx_android.ui.view.IAlbumListView;
+import com.buddysoft.tbtx_android.widgets.popup.SearchAlbumWindows;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,6 +31,7 @@ import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import de.greenrobot.event.EventBus;
 
 
 public class AlbumListActivity extends ToolbarActivity implements IAlbumListView, RadioGroup.OnCheckedChangeListener {
@@ -47,14 +52,14 @@ public class AlbumListActivity extends ToolbarActivity implements IAlbumListView
 
     private FragmentManager mFragmentManager;
     private AlbumListFragment mClassAlbumFragment, mKindergartenFragment;
-
+    private SearchAlbumWindows mSearchAlbumPopup;
     private List<String> mAlbumList;
 
     @Override
     protected void setUpContentView() {
         setContentView(R.layout.activity_album_list, R.string.title_album, R.menu.menu_album, MODE_BACK);
         ButterKnife.bind(this);
-
+        EventBus.getDefault().register(this);
         mFragmentManager = getSupportFragmentManager();
     }
 
@@ -133,5 +138,47 @@ public class AlbumListActivity extends ToolbarActivity implements IAlbumListView
         mSwRefresh.setRefreshing(false);
         mClassAlbumFragment.refresh(items, C.AlbumType.CLASS);
         mKindergartenFragment.refresh(items, C.AlbumType.KINDERGARTEN);
+    }
+
+    @Override
+    public boolean onMenuItemClick(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_search:
+                seach();
+                break;
+        }
+        return true;
+    }
+
+    private void seach() {
+        mSearchAlbumPopup = new SearchAlbumWindows(this, mSwRefresh);
+        mSearchAlbumPopup.setOperationInterface(new SearchAlbumWindows.OperationInterface() {
+            @Override
+            public void searchTime(String time) {
+                //waittingDialog();
+                time = time.substring(0, 10);
+                mPresenter.getAlbumList("", time);
+            }
+
+            @Override
+            public void searchName() {
+                Intent intent = new Intent(AlbumListActivity.this, AlbumSearchByNameActivity.class);
+                startActivity(intent);
+            }
+
+
+        });
+    }
+
+    public void onEvent(AlbumSearchEvent event) {
+        //waittingDialog();
+        mPresenter.getAlbumList(event.getMsg(), "");
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        ButterKnife.unbind(this);
+        EventBus.getDefault().unregister(this);
     }
 }

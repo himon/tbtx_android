@@ -44,4 +44,10 @@ public class RepositoriesManager {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
+
+    public Observable<AlbumEntity> createAlbum(String name, String cover) {
+        return mLiveApi.createAlbum(mUser.getObject().getKindergartenId(), mUser.getObject().getKclassId(), name, cover, mUser.getObject().getId())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
 }
