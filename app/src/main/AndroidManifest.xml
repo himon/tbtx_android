@@ -28,6 +28,10 @@
         </activity>
         <activity android:name=".ui.activity.album.AlbumSearchByNameActivity">
         </activity>
+        <activity android:name=".ui.activity.album.AlbumDetailActivity">
+        </activity>
+        <activity android:name=".ui.activity.album.EditAlbumActivity">
+        </activity>
     </application>
 
 </manifest>

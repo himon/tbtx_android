@@ -1,6 +1,7 @@
 package com.buddysoft.tbtx_android.ui.fragment.album;
 
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -8,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageView;
@@ -16,6 +18,7 @@ import android.widget.TextView;
 import com.buddysoft.tbtx_android.R;
 import com.buddysoft.tbtx_android.app.C;
 import com.buddysoft.tbtx_android.data.entity.AlbumEntity;
+import com.buddysoft.tbtx_android.ui.activity.album.AlbumDetailActivity;
 import com.buddysoft.tbtx_android.ui.adapter.CommonAdapter;
 import com.buddysoft.tbtx_android.ui.adapter.ViewHolder;
 import com.buddysoft.tbtx_android.ui.base.BaseFragment;
@@ -69,6 +72,25 @@ public class AlbumListFragment extends BaseFragment {
             }
         };
         mGvCommont.setAdapter(mBaseAdapter);
+
+        initEvent();
+    }
+
+    private void initEvent() {
+        mGvCommont.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                AlbumEntity.ItemsEntity entity = (AlbumEntity.ItemsEntity) parent.getAdapter().getItem(position);
+                toAlbumDetail(entity.getId(), entity.getName());
+            }
+        });
+    }
+
+    private void toAlbumDetail(String id, String name) {
+        Intent intent = new Intent(getActivity(), AlbumDetailActivity.class);
+        intent.putExtra(C.IntentKey.MESSAGE_EXTRA_KEY, id);
+        intent.putExtra(C.IntentKey.MESSAGE_EXTRA_KEY2, name);
+        startActivity(intent);
     }
 
     @Override

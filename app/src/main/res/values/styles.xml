@@ -15,6 +15,12 @@
         <item name="android:layout_height">?attr/actionBarSize</item>
         <item name="android:minHeight">?attr/actionBarSize</item>
         <item name="android:background">?attr/colorPrimary</item>
+        <item name="android:theme">@style/PopWindowStyle</item>
+    </style>
+
+    <style name="PopWindowStyle" parent="@style/ThemeOverlay.AppCompat.Dark.ActionBar">
+        <item name="android:colorBackground">@android:color/white</item>
+        <item name="android:textColorPrimary">@color/gray_font_text</item>
     </style>
 
     <style name="RecyclerViewStyle">

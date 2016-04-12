@@ -1,11 +1,16 @@
 package com.buddysoft.tbtx_android.data;
 
 
+import android.media.browse.MediaBrowser;
+
 import com.buddysoft.tbtx_android.app.C;
 import com.buddysoft.tbtx_android.data.api.LiveApi;
 import com.buddysoft.tbtx_android.data.entity.AdvertisementEntity;
+import com.buddysoft.tbtx_android.data.entity.AlbumDetailEntity;
 import com.buddysoft.tbtx_android.data.entity.AlbumEntity;
 import com.buddysoft.tbtx_android.data.entity.AnnouncementEntity;
+import com.buddysoft.tbtx_android.data.entity.BaseEntity;
+import com.buddysoft.tbtx_android.data.entity.EditAlbumEntity;
 import com.buddysoft.tbtx_android.data.entity.UserEntity;
 
 import rx.Observable;
@@ -47,6 +52,24 @@ public class RepositoriesManager {
 
     public Observable<AlbumEntity> createAlbum(String name, String cover) {
         return mLiveApi.createAlbum(mUser.getObject().getKindergartenId(), mUser.getObject().getKclassId(), name, cover, mUser.getObject().getId())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    public Observable<AlbumDetailEntity> getAlbumPhoto(String albumId) {
+        return mLiveApi.getAlbumPhoto(albumId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    public Observable<EditAlbumEntity> editAlbum(String albumId, String name, String cover) {
+        return mLiveApi.editAlbum(albumId, name, cover, mUser.getObject().getId())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    public Observable<BaseEntity> delAlbum(String albumId) {
+        return mLiveApi.delAlbum(albumId, mUser.getObject().getId())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }

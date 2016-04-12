@@ -15,6 +15,7 @@
     <string name="title_home">童班童学</string>
     <string name="title_album">相册</string>
     <string name="title_add_album">添加相册</string>
+    <string name="title_edit_album">编辑相册</string>
 
     <!--相册-->
     <string name="class_album">班级相册</string>

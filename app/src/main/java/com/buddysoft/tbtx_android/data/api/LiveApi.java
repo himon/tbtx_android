@@ -2,8 +2,11 @@ package com.buddysoft.tbtx_android.data.api;
 
 
 import com.buddysoft.tbtx_android.data.entity.AdvertisementEntity;
+import com.buddysoft.tbtx_android.data.entity.AlbumDetailEntity;
 import com.buddysoft.tbtx_android.data.entity.AlbumEntity;
 import com.buddysoft.tbtx_android.data.entity.AnnouncementEntity;
+import com.buddysoft.tbtx_android.data.entity.BaseEntity;
+import com.buddysoft.tbtx_android.data.entity.EditAlbumEntity;
 import com.buddysoft.tbtx_android.data.entity.UserEntity;
 
 import retrofit2.http.Field;
@@ -63,4 +66,34 @@ public interface LiveApi {
     @FormUrlEncoded
     @POST("album/create")
     Observable<AlbumEntity> createAlbum(@Field("kindergartenId") String kindergartenId, @Field("classId") String classId, @Field("name") String name, @Field("cover") String cover, @Field("operatorId") String operatorId);
+
+    /**
+     * 获取相册相片
+     * @param albumId
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("album-photo/index")
+    Observable<AlbumDetailEntity> getAlbumPhoto(@Field("albumId") String albumId);
+
+    /**
+     * 修改相册
+     * @param albumId
+     * @param name
+     * @param cover
+     * @param operatorId
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("album/update")
+    Observable<EditAlbumEntity> editAlbum(@Field("albumId") String albumId, @Field("name") String name, @Field("cover") String cover, @Field("operatorId") String operatorId);
+
+    /**
+     * 删除相册
+     * @param albumId
+     * @return
+     */
+    @FormUrlEncoded
+    @POST("album/delete")
+    Observable<BaseEntity> delAlbum(@Field("albumId") String albumId, @Field("operatorId") String operatorId);
 }
