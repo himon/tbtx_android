@@ -13,6 +13,8 @@ import com.buddysoft.tbtx_android.data.entity.BaseEntity;
 import com.buddysoft.tbtx_android.data.entity.EditAlbumEntity;
 import com.buddysoft.tbtx_android.data.entity.UserEntity;
 
+import java.util.List;
+
 import rx.Observable;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
@@ -70,6 +72,12 @@ public class RepositoriesManager {
 
     public Observable<BaseEntity> delAlbum(String albumId) {
         return mLiveApi.delAlbum(albumId, mUser.getObject().getId())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    public Observable<BaseEntity> uploadPhoto(String albumId, String photos) {
+        return mLiveApi.uploadPhoto(mUser.getObject().getId(), albumId, photos)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }

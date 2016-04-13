@@ -96,4 +96,8 @@ public interface LiveApi {
     @FormUrlEncoded
     @POST("album/delete")
     Observable<BaseEntity> delAlbum(@Field("albumId") String albumId, @Field("operatorId") String operatorId);
+
+    @FormUrlEncoded
+    @POST("album-photo/add")
+    Observable<BaseEntity> uploadPhoto(@Field("kuserId") String kuserId, @Field("albumId") String albumId, @Field("photos") String photos);
 }

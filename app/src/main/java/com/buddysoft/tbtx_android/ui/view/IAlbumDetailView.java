@@ -10,4 +10,6 @@ public interface IAlbumDetailView {
     void setDetail(AlbumDetailEntity albumDetailEntity);
 
     void setDel(BaseEntity entity);
+
+    void setUploadSuccess(BaseEntity baseEntity);
 }
