@@ -17,5 +17,5 @@ import dagger.Subcomponent;
 )
 public interface HomeFragmentComponent {
 
-    HomeFragment inject(HomeFragment mainActivity);
+    HomeFragment inject(HomeFragment homeFragment);
 }
