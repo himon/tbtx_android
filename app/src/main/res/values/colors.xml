@@ -13,6 +13,10 @@
     <color name="gray_font_text">#BFBFBF</color>
     <color name="gray_font_text2">#515151</color>
     <color name="gray_font_text3">#9B9B9B</color>
+    <color name="photo_detail_font_text_red">#DB5332</color>
+    <color name="photo_detail_font_text_gray">#9B9B9B</color>
+    <color name="photo_detail_reply_name_font_text_gray">#F5A623</color>
+    <color name="photo_detail_reply_font_text_gray">#5C5C5C</color>
 
     <color name="red_font_text">#DB2023</color>
     <color name="black_font_text">#3D4346</color>

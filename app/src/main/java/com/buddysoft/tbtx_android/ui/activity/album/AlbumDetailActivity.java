@@ -125,6 +125,9 @@ public class AlbumDetailActivity extends BaseListActivity<AlbumDetailEntity.Item
 
     @Override
     public void onRefresh(int action) {
+        if(mDataList == null){
+            mDataList = new ArrayList<>();
+        }
         mPresenter.getAlbumPhoto(mAlbumId);
     }
 
@@ -170,9 +173,16 @@ public class AlbumDetailActivity extends BaseListActivity<AlbumDetailEntity.Item
 
         @Override
         public void onItemClick(View view, int position) {
-
+            AlbumDetailEntity.ItemsEntity itemsEntity = mDataList.get(position);
+            toPhotoDetail(itemsEntity);
         }
 
+    }
+
+    private void toPhotoDetail(AlbumDetailEntity.ItemsEntity item) {
+        Intent intent = new Intent(this, AlbumPhotoDetailActivity.class);
+        intent.putExtra(C.IntentKey.MESSAGE_EXTRA_KEY, item);
+        startActivity(intent);
     }
 
     @Override

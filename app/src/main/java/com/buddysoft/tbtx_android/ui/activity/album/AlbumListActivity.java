@@ -165,8 +165,6 @@ public class AlbumListActivity extends ToolbarActivity implements IAlbumListView
                 Intent intent = new Intent(AlbumListActivity.this, AlbumSearchByNameActivity.class);
                 startActivity(intent);
             }
-
-
         });
     }
 

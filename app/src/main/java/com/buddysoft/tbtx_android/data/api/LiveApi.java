@@ -4,9 +4,11 @@ package com.buddysoft.tbtx_android.data.api;
 import com.buddysoft.tbtx_android.data.entity.AdvertisementEntity;
 import com.buddysoft.tbtx_android.data.entity.AlbumDetailEntity;
 import com.buddysoft.tbtx_android.data.entity.AlbumEntity;
+import com.buddysoft.tbtx_android.data.entity.AlbumPhotoCommentEntity;
 import com.buddysoft.tbtx_android.data.entity.AnnouncementEntity;
 import com.buddysoft.tbtx_android.data.entity.BaseEntity;
 import com.buddysoft.tbtx_android.data.entity.EditAlbumEntity;
+import com.buddysoft.tbtx_android.data.entity.PhotoIsPraiseEntity;
 import com.buddysoft.tbtx_android.data.entity.UserEntity;
 
 import retrofit2.http.Field;
@@ -100,4 +102,20 @@ public interface LiveApi {
     @FormUrlEncoded
     @POST("album-photo/add")
     Observable<BaseEntity> uploadPhoto(@Field("kuserId") String kuserId, @Field("albumId") String albumId, @Field("photos") String photos);
+
+    @FormUrlEncoded
+    @POST("album-photo/is-praise")
+    Observable<PhotoIsPraiseEntity> isPraise(@Field("operatorId") String operatorId, @Field("photoId") String photoId);
+
+    @FormUrlEncoded
+    @POST("album-photo/praise")
+    Observable<BaseEntity> praise(@Field("operatorId") String operatorId, @Field("photoId") String photoId);
+
+    @FormUrlEncoded
+    @POST("album-photo/cancel-praise")
+    Observable<BaseEntity> canclePraise(@Field("operatorId") String operatorId, @Field("photoId") String photoId);
+
+    @FormUrlEncoded
+    @POST("album-photo/comment")
+    Observable<AlbumPhotoCommentEntity> commitComment(@Field("photoId") String photoId, @Field("operatorId") String operatorId, @Field("content") String content);
 }
