@@ -51,11 +51,12 @@
         android:paddingRight="20dp"
         android:paddingTop="10dp">
 
-        <TextView
+        <EditText
+            android:id="@+id/et_name"
             android:layout_width="0dp"
+            android:background="@android:color/transparent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="小二班相册"/>
+            android:layout_weight="1"/>
 
     </LinearLayout>
 

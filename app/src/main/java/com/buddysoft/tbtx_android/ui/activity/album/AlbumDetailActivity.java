@@ -110,7 +110,7 @@ public class AlbumDetailActivity extends BaseListActivity<AlbumDetailEntity.Item
 
     @Override
     protected ILayoutManager getLayoutManager() {
-        return new MyGridLayoutManager(getApplicationContext(), 3);
+        return new MyGridLayoutManager(getApplicationContext(), 2);
     }
 
     @Override

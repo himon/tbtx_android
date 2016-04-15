@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<HorizontalScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/ezopen_realplay_operate_bar2"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fadingEdge="none"
+    android:scrollbars="none"
+    android:paddingBottom="44dp" >
+	<RelativeLayout 
+	    android:id="@+id/realplay_operate_ly2"
+    	android:layout_width="match_parent"
+    	android:layout_height="match_parent"
+    	android:gravity="center"
+	    android:layout_gravity="left"
+	    android:paddingRight="30dp" >
+
+		<LinearLayout 
+		    android:id="@+id/realplay_previously_btn_ly2"
+		    android:layout_width="wrap_content"
+		    android:layout_height="wrap_content"
+	        android:layout_marginLeft="30dp"
+	        android:layout_marginTop="15dp"
+	        android:layout_marginBottom="15dp"
+		    android:orientation="vertical" >						    			
+		    <ImageButton
+		        android:id="@+id/realplay_previously_btn2"
+		        android:layout_width="wrap_content"
+		        android:layout_height="wrap_content"
+		        android:background="@drawable/play_previously_selector"
+		        android:onClick="onClick" />
+		   <TextView
+		       android:layout_width="wrap_content"
+		       android:layout_height="wrap_content"
+			   android:layout_marginTop="7dp"
+			   android:text="@string/capture"
+			   android:layout_gravity="center"
+		       android:textColor="@color/common_sub_text"
+		       android:textSize="@dimen/realplay_text_size" />		    
+		</LinearLayout>
+	</RelativeLayout>
+</HorizontalScrollView>

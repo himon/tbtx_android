@@ -21,4 +21,61 @@
     <color name="red_font_text">#DB2023</color>
     <color name="black_font_text">#3D4346</color>
     <color name="blue_font_text">#2E91FB</color>
+
+    <!-- 选择城市位置添加color -->
+    <color name="biz_plugin_weather_text1">#ff2f2f2f</color>
+    <color name="base_main_bg_color">#fff0f0f0</color>
+    <color name="actionbar_separator">#A71717</color>
+    <color name="actionbar_background_start">#CD2626</color>
+    <color name="actionbar_background_end">#EB1818</color>
+    <color name="base_black">#ff000000</color>
+    <color name="orange_fen">#f7b8e3</color>
+    <color name="orange_red1">#FE5858</color>
+
+
+    <color name="blue2">#3FB2CA</color>
+    <color name="red1">#EE2828</color>
+    <color name="greed1">#21B011</color>
+    <color name="font_hui">#B8B8B8</color>
+    <color name="font_hui1">#555555</color>
+    <color name="yello0">#FCAB36</color>
+    <color name="yello4">#FEE04C</color>
+    <color name="bg_hui">#EFEFF4</color>
+    <color name="bg_hui1">#F0F0F1</color>
+    <color name="black1">#3D4346</color>
+    <color name="line1">#EDEDED</color>
+    <color name="line2">#E3E3E3</color>
+    <color name="line3">#d6d6d6</color>
+    <color name="black2">#666666</color>
+    <color name="black3">#3B444D</color>
+    <color name="black4">#6f6f6f</color>
+    <color name="hui">#EEEEEF</color>
+    <color name="circle">#5092ACA8</color>
+    <color name="red_jq">#FD3464</color>
+    <color name="background_tab_pressed">#8833B5E5</color>
+    <color name="province_line_border">#C7C7C7</color>
+    <color name="red5">#CC342F</color>
+    <color name="list_item_press">#2e000000</color>
+    <color name="line4">#E5E4E6</color>
+    <color name="green1">#24AD5D</color>
+    <color name="qian_hui2">#EAEBEB</color>
+    <color name="text_hui">#BFBFBF</color>
+    <color name="black5">#494A4C</color>
+    <color name="green">#008000</color>
+    <color name="white">#FFFFFF</color>
+    <color name="gray">#808080</color>
+    <color name="qian_hui3">#D4D4D4</color>
+    <color name="font_red">#DB2023</color>
+    <color name="font_hui3">#9B9B9B</color>
+    <color name="font_hui2">#515151</color>
+    <color name="qian_hui">#C5C5C5</color>
+    <color name="blue">#2E91FB</color>
+    <color name="transparent">#00ffffff</color>
+    <color name="preview_quality_color">#3eaefa</color>
+    <color name="common_sub_text">#888888</color>
+    <color name="source_detection_btn_color">#48a9fb</color>
+    <color name="viewfinder_frame">#929292</color>
+    <color name="dark_bg_70p">#bb000000</color>
+    <color name="common_bg">#f0f0f3</color>
+    <color name="quality_focused_color">#448cf3</color>
 </resources>

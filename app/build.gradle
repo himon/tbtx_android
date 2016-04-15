@@ -9,7 +9,7 @@ android {
     defaultConfig {
         applicationId "com.buddysoft.tbtx_android"
         minSdkVersion 15
-        targetSdkVersion 23
+        targetSdkVersion 21
         versionCode 1
         versionName "1.0"
     }
@@ -67,4 +67,10 @@ dependencies {
     compile 'cn.finalteam:galleryfinal:1.4.8.7'
     //又拍云
     compile 'com.upyun:upyun-android-sdk:1.0.1'
+    compile 'com.google.android.gms:play-services-appindexing:8.1.0'
+    compile 'com.pnikosis:materialish-progress:1.7'
+
+    compile project(':lazylibrary')
+    compile files('libs/EZOpenSDK.jar')
+    compile files('libs/gcm.jar')
 }

@@ -6,6 +6,7 @@ import android.support.v7.app.AppCompatActivity;
 
 import com.buddysoft.tbtx_android.app.TbtxApplication;
 import com.buddysoft.tbtx_android.app.component.AppProductionComponent;
+import com.buddysoft.tbtx_android.widgets.CustomerProgress;
 
 
 /**
@@ -20,6 +21,8 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     protected abstract void setUpData();
 
+    private CustomerProgress mCustomerProgress;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -33,5 +36,17 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     public AppProductionComponent getAppProductionComponent() {
         return TbtxApplication.get(this).getAppProductionComponent();
+    }
+
+    public void waittingDialog() {
+        setTheme(android.R.style.Theme);
+        mCustomerProgress = new CustomerProgress(this, "进行中,请稍后");
+        mCustomerProgress.show();
+    }
+
+    public void stopCusDialog() {
+        if (mCustomerProgress != null) {
+            mCustomerProgress.dismiss();
+        }
     }
 }
