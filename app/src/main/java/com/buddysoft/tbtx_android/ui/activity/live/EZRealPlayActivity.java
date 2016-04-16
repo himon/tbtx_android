@@ -34,6 +34,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.SystemClock;
+import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -68,8 +69,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.buddysoft.tbtx_android.R;
+import com.buddysoft.tbtx_android.app.TbtxApplication;
+import com.buddysoft.tbtx_android.data.entity.CameraEntity;
 import com.buddysoft.tbtx_android.data.model.Camera;
 import com.buddysoft.tbtx_android.ui.base.BaseActivity;
+import com.buddysoft.tbtx_android.ui.base.ToolbarActivity;
+import com.buddysoft.tbtx_android.ui.module.AlbumListActivityModule;
+import com.buddysoft.tbtx_android.ui.module.EZRealPlayActivityModule;
+import com.buddysoft.tbtx_android.ui.presenter.EZRealPlayActivityPresenter;
+import com.buddysoft.tbtx_android.ui.view.IEZRealPlayView;
 import com.buddysoft.tbtx_android.widgets.popup.VedioWindows;
 import com.buddysoft.tbtx_android.videogo.AudioPlayUtil;
 import com.buddysoft.tbtx_android.videogo.EZUtils;
@@ -126,15 +134,21 @@ import java.util.Random;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import javax.inject.Inject;
+
 /**
  * 实时预览2.7
  *
  * @author xiaxingsuo
  * @data 2015-11-11
  */
-public class EZRealPlayActivity extends BaseActivity implements OnClickListener, SurfaceHolder.Callback,
+public class EZRealPlayActivity extends ToolbarActivity implements IEZRealPlayView, OnClickListener, SurfaceHolder.Callback,
         Handler.Callback, OnTouchListener, SecureValidate.SecureValidateListener, OpenYSService.OpenYSServiceListener {
     private static final String TAG = "RealPlayerActivity";
+
+    @Inject
+    EZRealPlayActivityPresenter mPresenter;
+
     /**
      * 动画时间
      */
@@ -303,12 +317,10 @@ public class EZRealPlayActivity extends BaseActivity implements OnClickListener,
      * See https://g.co/AppIndexing/AndroidStudio for more information.
      */
     private GoogleApiClient client;
-    private List<Camera> mCameraList;
+    private List<CameraEntity.ItemsBean> mCameraList;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
+    protected void setUpContentView() {
         initData();
         initView();
         client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
@@ -316,9 +328,25 @@ public class EZRealPlayActivity extends BaseActivity implements OnClickListener,
         getCameraList();
     }
 
+    @Override
+    protected void setUpView() {
+
+    }
+
+    @Override
+    protected void setUpData() {
+
+    }
+
+    @Override
+    protected void setupActivityComponent() {
+        TbtxApplication.get(this).getUserComponent().plus(new EZRealPlayActivityModule(this)).inject(this);
+    }
+
     private void getCameraList() {
-        GetCameraListOperation getCameraListOperation = new GetCameraListOperation();
-        getCameraListOperation.startPostRequest(this);
+//        GetCameraListOperation getCameraListOperation = new GetCameraListOperation();
+//        getCameraListOperation.startPostRequest(this);
+        mPresenter.getCameraList();
     }
 
     @Override
@@ -555,8 +583,8 @@ public class EZRealPlayActivity extends BaseActivity implements OnClickListener,
 
     // 初始化界面
     private void initView() {
-        setContentView(R.layout.ez_realplay_page);
-        super.initBaseView();
+        setContentView(R.layout.ez_realplay_page, R.string.title_video, MODE_BACK);
+        //super.initBaseView();
         // 保持屏幕常亮
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
@@ -691,12 +719,12 @@ public class EZRealPlayActivity extends BaseActivity implements OnClickListener,
         mWaitDialog = new WaitDialog(this, android.R.style.Theme_Translucent_NoTitleBar);
         mWaitDialog.setCancelable(false);
 
-        super.mTvTitle.setText("请选择");
+        //super.mTvTitle.setText("请选择");
         Drawable drawable = getResources().getDrawable(R.drawable.arrows_down);
-/// 这一步必须要做,否则不会显示.
+        // 这一步必须要做,否则不会显示.
         drawable.setBounds(0, 0, drawable.getMinimumWidth(), drawable.getMinimumHeight());
-        super.mTvTitle.setCompoundDrawables(null, null, drawable, null);
-        super.mTvTitle.setOnClickListener(new OnClickListener() {
+        toolbar_title.setCompoundDrawables(null, null, drawable, null);
+        toolbar_title.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (mCameraList != null && mCameraList.size() > 0) {
@@ -705,11 +733,11 @@ public class EZRealPlayActivity extends BaseActivity implements OnClickListener,
                     VedioWindows vedioWindows = new VedioWindows(EZRealPlayActivity.this, mRealPlayPageLy, mCameraList);
                     vedioWindows.setOperationInterface(new VedioWindows.OperationInterface() {
                         @Override
-                        public void playVideo(Camera camera, int position) {
-                            for (Camera cam : mCameraList) {
-                                cam.setIsCheck(false);
+                        public void playVideo(CameraEntity.ItemsBean camera, int position) {
+                            for (CameraEntity.ItemsBean cam : mCameraList) {
+                                cam.setCheck(false);
                             }
-                            camera.setIsCheck(true);
+                            camera.setCheck(true);
                             mCameraList.set(position, camera);
                             mEZOpenSDK.setAccessToken(camera.getAccessToken());
                             mCameraInfo = new EZCameraInfo();
@@ -718,7 +746,7 @@ public class EZRealPlayActivity extends BaseActivity implements OnClickListener,
                             mCameraInfo.setOnlineStatus(1);
                             mCameraInfo.setVideoLevel(1);
                             mStatus = RealPlayStatus.STATUS_INIT;
-                            mTvTitle.setText(camera.getName());
+                            toolbar_title.setText(camera.getName());
                             startPlay();
                         }
                     });
@@ -1122,9 +1150,10 @@ public class EZRealPlayActivity extends BaseActivity implements OnClickListener,
         }
     }
 
-    @Override
-    public void didSucceed(BaseOperation operation) {
+
+    public void setCameraSuccess() {
         stopCusDialog();
+        /*
         if (operation.getClass().equals(GetCameraListOperation.class)) {
             GetCameraListOperation getCameraListOperation = (GetCameraListOperation) operation;
             if (getCameraListOperation.mCameraList != null) {
@@ -1159,6 +1188,7 @@ public class EZRealPlayActivity extends BaseActivity implements OnClickListener,
                 startPlay();
             }
         }
+        */
     }
 
     private void setFullPtzStartUI(boolean startAnim) {

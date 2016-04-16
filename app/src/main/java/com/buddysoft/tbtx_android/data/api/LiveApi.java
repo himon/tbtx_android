@@ -7,6 +7,7 @@ import com.buddysoft.tbtx_android.data.entity.AlbumEntity;
 import com.buddysoft.tbtx_android.data.entity.AlbumPhotoCommentEntity;
 import com.buddysoft.tbtx_android.data.entity.AnnouncementEntity;
 import com.buddysoft.tbtx_android.data.entity.BaseEntity;
+import com.buddysoft.tbtx_android.data.entity.CameraEntity;
 import com.buddysoft.tbtx_android.data.entity.EditAlbumEntity;
 import com.buddysoft.tbtx_android.data.entity.PhotoIsPraiseEntity;
 import com.buddysoft.tbtx_android.data.entity.UserEntity;
@@ -118,4 +119,8 @@ public interface LiveApi {
     @FormUrlEncoded
     @POST("album-photo/comment")
     Observable<AlbumPhotoCommentEntity> commitComment(@Field("photoId") String photoId, @Field("operatorId") String operatorId, @Field("content") String content);
+
+    @FormUrlEncoded
+    @POST("camera/index")
+    Observable<CameraEntity> getCameraList(@Field("kuserId") String kuserId);
 }

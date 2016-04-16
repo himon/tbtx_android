@@ -3,6 +3,7 @@ package com.buddysoft.tbtx_android.app;
 import android.app.Application;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
+import android.support.multidex.MultiDex;
 
 import com.buddysoft.tbtx_android.app.component.AppComponent;
 import com.buddysoft.tbtx_android.app.component.AppProductionComponent;
@@ -37,6 +38,12 @@ public class TbtxApplication extends Application {
 
     public static TbtxApplication get(Context context) {
         return (TbtxApplication) context.getApplicationContext();
+    }
+
+    @Override
+    protected void attachBaseContext(Context base) {
+        super.attachBaseContext(base);
+        MultiDex.install(this);
     }
 
     @Override

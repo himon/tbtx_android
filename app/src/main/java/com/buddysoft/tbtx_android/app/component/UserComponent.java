@@ -11,12 +11,14 @@ import com.buddysoft.tbtx_android.ui.component.AddAlbumActivityComponent;
 import com.buddysoft.tbtx_android.ui.component.AlbumDetailActivityComponent;
 import com.buddysoft.tbtx_android.ui.component.AlbumListActivityComponent;
 import com.buddysoft.tbtx_android.ui.component.AlbumPhotoDetailActivityComponent;
+import com.buddysoft.tbtx_android.ui.component.EZRealPlayActivityComponent;
 import com.buddysoft.tbtx_android.ui.component.EditAlbumActivityComponent;
 import com.buddysoft.tbtx_android.ui.component.MainActivityComponent;
 import com.buddysoft.tbtx_android.ui.module.AddAlbumActivityModule;
 import com.buddysoft.tbtx_android.ui.module.AlbumDetailActivityModule;
 import com.buddysoft.tbtx_android.ui.module.AlbumListActivityModule;
 import com.buddysoft.tbtx_android.ui.module.AlbumPhotoDetailActivityModule;
+import com.buddysoft.tbtx_android.ui.module.EZRealPlayActivityModule;
 import com.buddysoft.tbtx_android.ui.module.EditAlbumActivityModule;
 import com.buddysoft.tbtx_android.ui.module.MainActivityModule;
 
@@ -44,4 +46,6 @@ public interface UserComponent {
         EditAlbumActivityComponent plus(EditAlbumActivityModule module);
 
         AlbumPhotoDetailActivityComponent plus(AlbumPhotoDetailActivityModule module);
+
+        EZRealPlayActivityComponent plus(EZRealPlayActivityModule module);
 }

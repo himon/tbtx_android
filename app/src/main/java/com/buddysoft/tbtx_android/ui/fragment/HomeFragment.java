@@ -21,6 +21,7 @@ import com.buddysoft.tbtx_android.data.entity.AdvertisementEntity;
 import com.buddysoft.tbtx_android.data.entity.AnnouncementEntity;
 import com.buddysoft.tbtx_android.ui.activity.MainActivity;
 import com.buddysoft.tbtx_android.ui.activity.album.AlbumListActivity;
+import com.buddysoft.tbtx_android.ui.activity.live.EZRealPlayActivity;
 import com.buddysoft.tbtx_android.ui.adapter.CommonAdapter;
 import com.buddysoft.tbtx_android.ui.adapter.ViewHolder;
 import com.buddysoft.tbtx_android.ui.base.BaseFragment;
@@ -56,6 +57,8 @@ public class HomeFragment extends ToolbarFragment implements IHomeView, OnItemCl
     ListView mListView;
     @Bind(R.id.btn_album_list)
     ImageButton mIbAlbum;
+    @Bind(R.id.ib_video)
+    ImageButton mIbVideo;
 
     @Inject
     HomeFragmentPresenter mPresenter;
@@ -104,6 +107,7 @@ public class HomeFragment extends ToolbarFragment implements IHomeView, OnItemCl
 
     private void initEvent() {
         mIbAlbum.setOnClickListener(this);
+        mIbVideo.setOnClickListener(this);
     }
 
     @Override
@@ -160,7 +164,15 @@ public class HomeFragment extends ToolbarFragment implements IHomeView, OnItemCl
             case R.id.btn_album_list:
                 toAlbum();
                 break;
+            case R.id.ib_video:
+                toVideo();
+                break;
         }
+    }
+
+    private void toVideo() {
+        Intent intent = new Intent(getActivity(), EZRealPlayActivity.class);
+        startActivity(intent);
     }
 
     private void toAlbum() {

@@ -11,6 +11,7 @@ import com.buddysoft.tbtx_android.data.entity.AlbumEntity;
 import com.buddysoft.tbtx_android.data.entity.AlbumPhotoCommentEntity;
 import com.buddysoft.tbtx_android.data.entity.AnnouncementEntity;
 import com.buddysoft.tbtx_android.data.entity.BaseEntity;
+import com.buddysoft.tbtx_android.data.entity.CameraEntity;
 import com.buddysoft.tbtx_android.data.entity.EditAlbumEntity;
 import com.buddysoft.tbtx_android.data.entity.PhotoIsPraiseEntity;
 import com.buddysoft.tbtx_android.data.entity.UserEntity;
@@ -104,6 +105,12 @@ public class RepositoriesManager {
 
     public Observable<AlbumPhotoCommentEntity> commitComment(String photoId, String content, String commentId) {
         return mLiveApi.commitComment(photoId, mUser.getObject().getId(), content)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    public  Observable<CameraEntity> getCameraList() {
+        return mLiveApi.getCameraList(mUser.getObject().getId())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }

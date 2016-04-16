@@ -13,10 +13,11 @@ import android.widget.GridView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
 
-import com.buddysoft.tbtx.R;
-import com.buddysoft.tbtx.adapter.CommonAdapter;
-import com.buddysoft.tbtx.adapter.ViewHolder;
-import com.buddysoft.tbtx.model.Camera;
+
+import com.buddysoft.tbtx_android.R;
+import com.buddysoft.tbtx_android.data.entity.CameraEntity;
+import com.buddysoft.tbtx_android.ui.adapter.CommonAdapter;
+import com.buddysoft.tbtx_android.ui.adapter.ViewHolder;
 
 import java.util.List;
 
@@ -36,7 +37,7 @@ public class VedioWindows extends PopupWindow implements View.OnClickListener {
 
     private OperationInterface mOperationInterface;
 
-    public VedioWindows(final Activity mContext, View parent, List<Camera> cameras) {
+    public VedioWindows(final Activity mContext, View parent, List<CameraEntity.ItemsBean> cameras) {
         mActivity = mContext;
         View view = View.inflate(mContext, R.layout.video_popupwindows, null);
         view.startAnimation(AnimationUtils.loadAnimation(mContext,
@@ -56,13 +57,13 @@ public class VedioWindows extends PopupWindow implements View.OnClickListener {
         update();
     }
 
-    private void initView(final List<Camera> cameras) {
-        mBaseAdapter = new CommonAdapter<Camera>(mActivity, cameras, R.layout.camera_item) {
+    private void initView(final List<CameraEntity.ItemsBean> cameras) {
+        mBaseAdapter = new CommonAdapter<CameraEntity.ItemsBean>(mActivity, cameras, R.layout.camera_item) {
             @Override
-            public void convert(final ViewHolder helper, final Camera item) {
+            public void convert(final ViewHolder helper, final CameraEntity.ItemsBean item) {
                 CheckBox cb = helper.getView(R.id.cb_camera_name);
                 cb.setText(item.getName());
-                cb.setChecked(item.getIsCheck());
+                cb.setChecked(item.getCheck());
                 cb.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                     @Override
                     public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -85,6 +86,6 @@ public class VedioWindows extends PopupWindow implements View.OnClickListener {
     }
 
     public interface OperationInterface {
-        public void playVideo(Camera camera, int position);
+        public void playVideo(CameraEntity.ItemsBean camera, int position);
     }
 }

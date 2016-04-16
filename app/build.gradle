@@ -8,16 +8,36 @@ android {
 
     defaultConfig {
         applicationId "com.buddysoft.tbtx_android"
-        minSdkVersion 15
+        minSdkVersion 16
         targetSdkVersion 21
         versionCode 1
         versionName "1.0"
+
+        multiDexEnabled = true;
+
     }
+
+    dexOptions{
+        javaMaxHeapSize "2g"
+    }
+
     buildTypes {
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+    }
+
+    task nativeLibsToJar(type: Zip, description: "create a jar archive of the native libs") {
+        destinationDir file("$projectDir/libs")
+        baseName "Native_Libs2"
+        extension "jar"
+        from fileTree(dir: "libs", include: "**/*.so")
+        into "lib"
+    }
+
+    tasks.withType(JavaCompile) {
+        compileTask -> compileTask.dependsOn(nativeLibsToJar)
     }
 
     compileOptions {
@@ -34,6 +54,7 @@ dependencies {
     compile 'com.android.support:design:23.2.1'
     compile 'com.android.support:recyclerview-v7:23.2.1'
     compile 'com.android.support:support-v4:23.2.1'
+    compile 'com.android.support:multidex:1.+'
     //Dagger 2
     apt 'com.google.dagger:dagger-compiler:2.1'
     compile 'com.google.dagger:dagger:2.1'
@@ -52,12 +73,8 @@ dependencies {
     compile 'com.google.guava:guava:18.0'
     compile 'com.github.bumptech.glide:glide:3.6.1'
     compile 'com.jakewharton:butterknife:7.0.1'
-    compile 'com.jakewharton.timber:timber:4.1.0'
-    compile 'com.squareup.picasso:picasso:2.5.2'
     compile 'com.nostra13.universalimageloader:universal-image-loader:1.9.3'
     compile 'de.greenrobot:eventbus:2.4.0'
-    //Utils
-    compile 'com.jude:utils:1.1.1'
     //轮播图
     compile 'com.bigkoo:convenientbanner:2.0.5'
     compile 'com.ToxicBakery.viewpager.transforms:view-pager-transforms:1.2.32@aar'
@@ -69,6 +86,7 @@ dependencies {
     compile 'com.upyun:upyun-android-sdk:1.0.1'
     compile 'com.google.android.gms:play-services-appindexing:8.1.0'
     compile 'com.pnikosis:materialish-progress:1.7'
+
 
     compile project(':lazylibrary')
     compile files('libs/EZOpenSDK.jar')

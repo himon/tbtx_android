@@ -13,7 +13,6 @@ import com.buddysoft.tbtx_android.ui.view.ILoginView;
 import com.buddysoft.tbtx_android.util.RegexUtils;
 import com.google.common.util.concurrent.FutureCallback;
 import com.google.common.util.concurrent.Futures;
-import com.jude.utils.JUtils;
 
 import org.w3c.dom.Text;
 
