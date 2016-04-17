@@ -4,22 +4,37 @@ import android.content.Intent;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.KeyEvent;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
+import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.ListView;
 
 import com.buddysoft.tbtx_android.R;
 import com.buddysoft.tbtx_android.app.C;
 import com.buddysoft.tbtx_android.app.TbtxApplication;
 import com.buddysoft.tbtx_android.data.entity.AlbumDetailEntity;
+import com.buddysoft.tbtx_android.data.entity.AnnouncementEntity;
 import com.buddysoft.tbtx_android.data.entity.BaseEntity;
+import com.buddysoft.tbtx_android.data.entity.PhotoDetailCommentEntity;
 import com.buddysoft.tbtx_android.data.entity.PhotoIsPraiseEntity;
+import com.buddysoft.tbtx_android.data.entity.UserEntity;
+import com.buddysoft.tbtx_android.ui.adapter.CommonAdapter;
+import com.buddysoft.tbtx_android.ui.adapter.ViewHolder;
 import com.buddysoft.tbtx_android.ui.base.ToolbarActivity;
 import com.buddysoft.tbtx_android.ui.module.AlbumPhotoDetailActivityModule;
 import com.buddysoft.tbtx_android.ui.presenter.AlbumPhotoDetailActivityPresenter;
 import com.buddysoft.tbtx_android.ui.view.IAlbumPhotoDetailView;
+import com.buddysoft.tbtx_android.util.ListViewHeight;
+import com.buddysoft.tbtx_android.widgets.popup.AlbumPhotoDetailWindows;
+import com.buddysoft.tbtx_android.widgets.popup.AlbumPhotoShowWindows;
 import com.bumptech.glide.Glide;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -34,13 +49,21 @@ public class AlbumPhotoDetailActivity extends ToolbarActivity implements IAlbumP
     ImageView mIvPraise;
     @Bind(R.id.et_commit)
     EditText mEtCommit;
+    @Bind(R.id.listview)
+    ListView mListView;
 
     private AlbumDetailEntity.ItemsEntity mPhotoDetail;
+    private BaseAdapter mBaseAdapter;
+    private List<PhotoDetailCommentEntity.ItemsEntity> mList;
+    private AlbumPhotoShowWindows mWindows;
+    private AlbumPhotoDetailWindows mCommentWindows;
 
     @Inject
     AlbumPhotoDetailActivityPresenter mPresenter;
 
     private boolean isPraise = false;
+    private UserEntity.ObjectEntity mUser;
+    private String commentId = "";
 
     @Override
     protected void setUpContentView() {
@@ -50,7 +73,45 @@ public class AlbumPhotoDetailActivity extends ToolbarActivity implements IAlbumP
 
     @Override
     protected void setUpView() {
+        mList = new ArrayList<>();
+        mBaseAdapter = new CommonAdapter<PhotoDetailCommentEntity.ItemsEntity>(this, mList, R.layout.adapter_photo_comment_item) {
+            @Override
+            public void convert(ViewHolder helper, PhotoDetailCommentEntity.ItemsEntity item) {
+                helper.setText(R.id.tv_name, item.getPublisher().getName());
+                helper.setText(R.id.tv_comment, item.getContent());
+                ImageView icon = helper.getView(R.id.iv_head_icon);
+                Glide.with(icon.getContext())
+                        .load(item.getPublisher().getAvatar())
+                        .centerCrop()
+                        .placeholder(R.color.colorPrimary)
+                        .crossFade()
+                        .into(icon);
+            }
+        };
+        mListView.setAdapter(mBaseAdapter);
+        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                PhotoDetailCommentEntity.ItemsEntity item = (PhotoDetailCommentEntity.ItemsEntity) parent.getAdapter().getItem(position);
+                if(item.getOperatorId().equals(mUser.getId())){
+                    commentDelPopup(item.getCommentId());
+                }else{
+                    mEtCommit.setHint("回复" + item.getPublisher().getName() + ":");
+                    commentId = item.getOperatorId();
+                }
+            }
+        });
         initEvent();
+    }
+
+    private void commentDelPopup(String commentId) {
+        mCommentWindows = new AlbumPhotoDetailWindows(this, toolbar);
+        mCommentWindows.setOperationInterface(new AlbumPhotoDetailWindows.OperationInterface() {
+            @Override
+            public void delete() {
+                mPresenter.delComment(commentId);
+            }
+        });
     }
 
     private void initEvent() {
@@ -67,7 +128,8 @@ public class AlbumPhotoDetailActivity extends ToolbarActivity implements IAlbumP
                                             .getWindowToken(),
                                     InputMethodManager.HIDE_NOT_ALWAYS);
                     //发表评论
-                    commitReply("");
+                    commitReply(commentId);
+                    commentId = "";
                 }
                 return false;
             }
@@ -92,6 +154,9 @@ public class AlbumPhotoDetailActivity extends ToolbarActivity implements IAlbumP
                 .crossFade()
                 .into(mIvPhoto);
         mPresenter.isPraise(mPhotoDetail.getId());
+        mPresenter.getCommentList(mPhotoDetail.getId());
+
+        mUser = mPresenter.getRepositoriesManager().getUser().getObject();
     }
 
     @Override
@@ -120,6 +185,21 @@ public class AlbumPhotoDetailActivity extends ToolbarActivity implements IAlbumP
     }
 
     @Override
+    public void setCommentList(List<PhotoDetailCommentEntity.ItemsEntity> items) {
+        mList.clear();
+        if (items != null) {
+            mList.addAll(items);
+        }
+        ListViewHeight.setListViewHeightBasedOnChildren(mListView);
+        mBaseAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void setDelCommentSuccess(BaseEntity entity) {
+
+    }
+
+    @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.iv_praise:
@@ -130,5 +210,42 @@ public class AlbumPhotoDetailActivity extends ToolbarActivity implements IAlbumP
                 }
                 break;
         }
+    }
+
+    @Override
+    public boolean onMenuItemClick(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.menu_operate:
+                popup();
+                break;
+        }
+        return true;
+    }
+
+    private void popup() {
+        mWindows = new AlbumPhotoShowWindows(this, toolbar, 0);
+        mWindows.setOperationInterface(new AlbumPhotoShowWindows.OperationInterface() {
+
+
+            @Override
+            public void shareWechat() {
+
+            }
+
+            @Override
+            public void shareWechatCircle() {
+
+            }
+
+            @Override
+            public void save() {
+
+            }
+
+            @Override
+            public void delete() {
+
+            }
+        });
     }
 }

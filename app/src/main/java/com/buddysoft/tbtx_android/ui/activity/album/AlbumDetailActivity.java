@@ -1,6 +1,7 @@
 package com.buddysoft.tbtx_android.ui.activity.album;
 
 import android.content.Intent;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.RecyclerView;
@@ -17,6 +18,8 @@ import com.buddysoft.tbtx_android.app.C;
 import com.buddysoft.tbtx_android.app.TbtxApplication;
 import com.buddysoft.tbtx_android.data.entity.AlbumDetailEntity;
 import com.buddysoft.tbtx_android.data.entity.BaseEntity;
+import com.buddysoft.tbtx_android.data.event.AlbumPhotoEvent;
+import com.buddysoft.tbtx_android.data.event.AlbumSearchEvent;
 import com.buddysoft.tbtx_android.ui.base.BaseListActivity;
 import com.buddysoft.tbtx_android.ui.base.ToolbarActivity;
 import com.buddysoft.tbtx_android.ui.module.AlbumDetailActivityModule;
@@ -27,6 +30,7 @@ import com.buddysoft.tbtx_android.util.loader.GlidePauseOnScrollListener;
 import com.buddysoft.tbtx_android.widgets.popup.AlbumDetailWindows;
 import com.buddysoft.tbtx_android.widgets.popup.SearchAlbumWindows;
 import com.buddysoft.tbtx_android.widgets.pull.BaseViewHolder;
+import com.buddysoft.tbtx_android.widgets.pull.PullRecycler;
 import com.buddysoft.tbtx_android.widgets.pull.layoutmanager.ILayoutManager;
 import com.buddysoft.tbtx_android.widgets.pull.layoutmanager.MyGridLayoutManager;
 import com.bumptech.glide.Glide;
@@ -58,6 +62,7 @@ import cn.finalteam.galleryfinal.ImageLoader;
 import cn.finalteam.galleryfinal.PauseOnScrollListener;
 import cn.finalteam.galleryfinal.ThemeConfig;
 import cn.finalteam.galleryfinal.model.PhotoInfo;
+import de.greenrobot.event.EventBus;
 
 /**
  * 相册详情
@@ -81,6 +86,7 @@ public class AlbumDetailActivity extends BaseListActivity<AlbumDetailEntity.Item
     @Override
     protected void setUpContentView() {
         super.setUpContentView();
+        EventBus.getDefault().register(this);
         Intent intent = getIntent();
         if (intent != null) {
             mAlbumId = intent.getStringExtra(C.IntentKey.MESSAGE_EXTRA_KEY);
@@ -127,6 +133,9 @@ public class AlbumDetailActivity extends BaseListActivity<AlbumDetailEntity.Item
     public void onRefresh(int action) {
         if(mDataList == null){
             mDataList = new ArrayList<>();
+        }
+        if(action == PullRecycler.ACTION_PULL_TO_REFRESH){
+            mDataList.clear();
         }
         mPresenter.getAlbumPhoto(mAlbumId);
     }
@@ -180,8 +189,17 @@ public class AlbumDetailActivity extends BaseListActivity<AlbumDetailEntity.Item
     }
 
     private void toPhotoDetail(AlbumDetailEntity.ItemsEntity item) {
-        Intent intent = new Intent(this, AlbumPhotoDetailActivity.class);
-        intent.putExtra(C.IntentKey.MESSAGE_EXTRA_KEY, item);
+        int i;
+        for(i = 0; i < mDataList.size(); i++){
+            AlbumDetailEntity.ItemsEntity entity = mDataList.get(i);
+            if(entity.getId().equals(item.getId())){
+                break;
+            }
+        }
+        Intent intent = new Intent(this, PhotoShowActivity.class);
+        intent.putExtra(C.IntentKey.MESSAGE_EXTRA_KEY, mDataList);
+        intent.putExtra(C.IntentKey.MESSAGE_EXTRA_KEY2, i);
+        intent.putExtra(C.IntentKey.MESSAGE_EXTRA_KEY3, mAlbumName);
         startActivity(intent);
     }
 
@@ -308,7 +326,7 @@ public class AlbumDetailActivity extends BaseListActivity<AlbumDetailEntity.Item
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                if(mUrl.size() > 0){
+                if(mUrl.size() == mPhotoList.size()){
                     mPresenter.uploadPhoto(mAlbumId, mUrl);
                 }
             }
@@ -325,5 +343,17 @@ public class AlbumDetailActivity extends BaseListActivity<AlbumDetailEntity.Item
             File file = new File(item.getPhotoPath());
             UploadManager.getInstance().formUpload(file, paramsMap, signatureListener, completeListener, progressListener);
         }
+    }
+
+
+    public void onEvent(AlbumPhotoEvent event) {
+        mDataList.clear();
+        mPresenter.getAlbumPhoto(mAlbumId);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
     }
 }

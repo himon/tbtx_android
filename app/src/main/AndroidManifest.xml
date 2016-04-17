@@ -15,26 +15,49 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ui.activity.MainActivity">
+        <activity
+            android:name=".ui.activity.MainActivity"
+            android:screenOrientation="portrait">
         </activity>
-        <activity android:name=".ui.activity.account.LoginActivity">
+        <activity
+            android:name=".ui.activity.account.LoginActivity"
+            android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
 
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
         </activity>
-        <activity android:name=".ui.activity.album.AlbumListActivity">
+        <activity
+            android:name=".ui.activity.album.AlbumListActivity"
+            android:screenOrientation="portrait">
         </activity>
-        <activity android:name=".ui.activity.album.AddAlbumActivity">
+        <activity
+            android:name=".ui.activity.album.AddAlbumActivity"
+            android:screenOrientation="portrait">
         </activity>
-        <activity android:name=".ui.activity.album.AlbumSearchByNameActivity">
+        <activity
+            android:name=".ui.activity.album.AlbumSearchByNameActivity"
+            android:screenOrientation="portrait">
         </activity>
-        <activity android:name=".ui.activity.album.AlbumDetailActivity">
+        <activity
+            android:name=".ui.activity.album.AlbumDetailActivity"
+            android:screenOrientation="portrait">
         </activity>
-        <activity android:name=".ui.activity.album.EditAlbumActivity">
+        <activity
+            android:name=".ui.activity.album.EditAlbumActivity"
+            android:screenOrientation="portrait">
         </activity>
-        <activity android:name=".ui.activity.album.AlbumPhotoDetailActivity">
+        <activity
+            android:name=".ui.activity.album.AlbumPhotoDetailActivity"
+            android:screenOrientation="portrait">
+        </activity>
+        <activity
+            android:name=".ui.activity.live.EZRealPlayActivity"
+            android:screenOrientation="portrait"/>
+        <activity
+            android:name=".ui.activity.album.PhotoShowActivity"
+            android:screenOrientation="portrait">
         </activity>
     </application>
 

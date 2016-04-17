@@ -13,6 +13,7 @@ import com.buddysoft.tbtx_android.data.entity.AnnouncementEntity;
 import com.buddysoft.tbtx_android.data.entity.BaseEntity;
 import com.buddysoft.tbtx_android.data.entity.CameraEntity;
 import com.buddysoft.tbtx_android.data.entity.EditAlbumEntity;
+import com.buddysoft.tbtx_android.data.entity.PhotoDetailCommentEntity;
 import com.buddysoft.tbtx_android.data.entity.PhotoIsPraiseEntity;
 import com.buddysoft.tbtx_android.data.entity.UserEntity;
 
@@ -30,6 +31,10 @@ public class RepositoriesManager {
     private UserEntity mUser;
     private LiveApi mLiveApi;
 
+    public UserEntity getUser() {
+        return mUser;
+    }
+
     public RepositoriesManager(UserEntity user, LiveApi liveApi) {
         this.mUser = user;
         this.mLiveApi = liveApi;
@@ -43,7 +48,25 @@ public class RepositoriesManager {
 
 
     public Observable<AnnouncementEntity> getAnnouncementList() {
-        return mLiveApi.announcement(mUser.getObject().getKclassId(), mUser.getObject().getKindergartenId(), C.LimitType.LATEST)
+
+        String classId = "";
+        String kindergartenId = "";
+
+        switch (mUser.getObject().getMobileRole()) {
+            case C.Role.RoleFirstParents:
+            case C.Role.RoleOtherParents:
+            case C.Role.RoleFirstTeacher:
+            case C.Role.RoleSecondTeacher:
+                classId = mUser.getObject().getKclassId();
+                break;
+            case C.Role.RoleKindergartenLeader:
+            case C.Role.RoleNurse:
+            case C.Role.RoleAdministrationTeacher:
+            case C.Role.RoleOtherTeacher:
+                kindergartenId = mUser.getObject().getKindergartenId();
+                break;
+        }
+        return mLiveApi.announcement(classId, kindergartenId, C.LimitType.LATEST)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }
@@ -109,8 +132,26 @@ public class RepositoriesManager {
                 .observeOn(AndroidSchedulers.mainThread());
     }
 
-    public  Observable<CameraEntity> getCameraList() {
+    public Observable<CameraEntity> getCameraList() {
         return mLiveApi.getCameraList(mUser.getObject().getId())
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    public Observable<BaseEntity> deletePhoto(String photoId) {
+        return mLiveApi.deletePhoto(mUser.getObject().getId(), photoId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    public Observable<PhotoDetailCommentEntity> getCommentList(String photoId) {
+        return mLiveApi.getCommentList(photoId)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread());
+    }
+
+    public Observable<BaseEntity> delComment(String commentId) {
+        return mLiveApi.delComment(commentId, mUser.getObject().getId())
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }

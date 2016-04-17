@@ -9,6 +9,7 @@ import com.buddysoft.tbtx_android.data.entity.AnnouncementEntity;
 import com.buddysoft.tbtx_android.data.entity.BaseEntity;
 import com.buddysoft.tbtx_android.data.entity.CameraEntity;
 import com.buddysoft.tbtx_android.data.entity.EditAlbumEntity;
+import com.buddysoft.tbtx_android.data.entity.PhotoDetailCommentEntity;
 import com.buddysoft.tbtx_android.data.entity.PhotoIsPraiseEntity;
 import com.buddysoft.tbtx_android.data.entity.UserEntity;
 
@@ -72,6 +73,7 @@ public interface LiveApi {
 
     /**
      * 获取相册相片
+     *
      * @param albumId
      * @return
      */
@@ -81,6 +83,7 @@ public interface LiveApi {
 
     /**
      * 修改相册
+     *
      * @param albumId
      * @param name
      * @param cover
@@ -93,6 +96,7 @@ public interface LiveApi {
 
     /**
      * 删除相册
+     *
      * @param albumId
      * @return
      */
@@ -123,4 +127,16 @@ public interface LiveApi {
     @FormUrlEncoded
     @POST("camera/index")
     Observable<CameraEntity> getCameraList(@Field("kuserId") String kuserId);
+
+    @FormUrlEncoded
+    @POST("album-photo/delete")
+    Observable<BaseEntity> deletePhoto(@Field("kuserId") String kuserId, @Field("photoId") String photoId);
+
+    @FormUrlEncoded
+    @POST("album-photo/comment-list")
+    Observable<PhotoDetailCommentEntity> getCommentList(@Field("photoId") String photoId);
+
+    @FormUrlEncoded
+    @POST("album-photo/delete-comment")
+    Observable<BaseEntity> delComment(@Field("commentId") String commentId, @Field("operatorId") String operatorId);
 }

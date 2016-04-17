@@ -40,7 +40,7 @@ public class CameraEntity extends BaseEntity {
         private String name;
         private String kgroupId;
         private String kindergartenId;
-        private String classroomId;
+        private int classroomId;
         private String deleted;
         private String display;
         private String accessToken;
@@ -97,11 +97,11 @@ public class CameraEntity extends BaseEntity {
             this.kindergartenId = kindergartenId;
         }
 
-        public String getClassroomId() {
+        public int getClassroomId() {
             return classroomId;
         }
 
-        public void setClassroomId(String classroomId) {
+        public void setClassroomId(int classroomId) {
             this.classroomId = classroomId;
         }
 

@@ -14,6 +14,7 @@ import com.buddysoft.tbtx_android.ui.component.AlbumPhotoDetailActivityComponent
 import com.buddysoft.tbtx_android.ui.component.EZRealPlayActivityComponent;
 import com.buddysoft.tbtx_android.ui.component.EditAlbumActivityComponent;
 import com.buddysoft.tbtx_android.ui.component.MainActivityComponent;
+import com.buddysoft.tbtx_android.ui.component.PhotoShowActivityComponent;
 import com.buddysoft.tbtx_android.ui.module.AddAlbumActivityModule;
 import com.buddysoft.tbtx_android.ui.module.AlbumDetailActivityModule;
 import com.buddysoft.tbtx_android.ui.module.AlbumListActivityModule;
@@ -21,6 +22,7 @@ import com.buddysoft.tbtx_android.ui.module.AlbumPhotoDetailActivityModule;
 import com.buddysoft.tbtx_android.ui.module.EZRealPlayActivityModule;
 import com.buddysoft.tbtx_android.ui.module.EditAlbumActivityModule;
 import com.buddysoft.tbtx_android.ui.module.MainActivityModule;
+import com.buddysoft.tbtx_android.ui.module.PhotoShowActivityModule;
 
 import dagger.Subcomponent;
 
@@ -48,4 +50,6 @@ public interface UserComponent {
         AlbumPhotoDetailActivityComponent plus(AlbumPhotoDetailActivityModule module);
 
         EZRealPlayActivityComponent plus(EZRealPlayActivityModule module);
+
+        PhotoShowActivityComponent plus(PhotoShowActivityModule module);
 }

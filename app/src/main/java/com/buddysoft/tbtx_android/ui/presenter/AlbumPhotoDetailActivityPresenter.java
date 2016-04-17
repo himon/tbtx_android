@@ -3,6 +3,7 @@ package com.buddysoft.tbtx_android.ui.presenter;
 import com.buddysoft.tbtx_android.data.RepositoriesManager;
 import com.buddysoft.tbtx_android.data.entity.AlbumPhotoCommentEntity;
 import com.buddysoft.tbtx_android.data.entity.BaseEntity;
+import com.buddysoft.tbtx_android.data.entity.PhotoDetailCommentEntity;
 import com.buddysoft.tbtx_android.data.entity.PhotoIsPraiseEntity;
 import com.buddysoft.tbtx_android.data.observer.SimpleObserver;
 import com.buddysoft.tbtx_android.ui.view.IAlbumPhotoDetailView;
@@ -14,6 +15,10 @@ public class AlbumPhotoDetailActivityPresenter {
 
     private IAlbumPhotoDetailView mIAlbumPhotoDetailView;
     private RepositoriesManager mRepositoriesManager;
+
+    public RepositoriesManager getRepositoriesManager() {
+        return mRepositoriesManager;
+    }
 
     public AlbumPhotoDetailActivityPresenter(IAlbumPhotoDetailView iAlbumPhotoDetailView, RepositoriesManager repositoriesManager) {
         this.mIAlbumPhotoDetailView = iAlbumPhotoDetailView;
@@ -67,6 +72,34 @@ public class AlbumPhotoDetailActivityPresenter {
             @Override
             public void onNext(AlbumPhotoCommentEntity albumPhotoCommentEntity) {
                 super.onNext(albumPhotoCommentEntity);
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                super.onError(e);
+            }
+        });
+    }
+
+    public void getCommentList(String photoId) {
+        mRepositoriesManager.getCommentList(photoId).subscribe(new SimpleObserver<PhotoDetailCommentEntity>(){
+            @Override
+            public void onNext(PhotoDetailCommentEntity photoDetailCommentEntity) {
+                mIAlbumPhotoDetailView.setCommentList(photoDetailCommentEntity.getItems());
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                super.onError(e);
+            }
+        });
+    }
+
+    public void delComment(String commentId) {
+        mRepositoriesManager.delComment(commentId).subscribe(new SimpleObserver<BaseEntity>(){
+            @Override
+            public void onNext(BaseEntity entity) {
+                mIAlbumPhotoDetailView.setDelCommentSuccess(entity);
             }
 
             @Override

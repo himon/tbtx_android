@@ -30,11 +30,9 @@ import android.graphics.drawable.AnimationDrawable;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
-import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.os.SystemClock;
-import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
@@ -69,12 +67,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.buddysoft.tbtx_android.R;
+import com.buddysoft.tbtx_android.app.C;
 import com.buddysoft.tbtx_android.app.TbtxApplication;
 import com.buddysoft.tbtx_android.data.entity.CameraEntity;
-import com.buddysoft.tbtx_android.data.model.Camera;
-import com.buddysoft.tbtx_android.ui.base.BaseActivity;
+import com.buddysoft.tbtx_android.data.entity.UserEntity;
 import com.buddysoft.tbtx_android.ui.base.ToolbarActivity;
-import com.buddysoft.tbtx_android.ui.module.AlbumListActivityModule;
 import com.buddysoft.tbtx_android.ui.module.EZRealPlayActivityModule;
 import com.buddysoft.tbtx_android.ui.presenter.EZRealPlayActivityPresenter;
 import com.buddysoft.tbtx_android.ui.view.IEZRealPlayView;
@@ -318,6 +315,7 @@ public class EZRealPlayActivity extends ToolbarActivity implements IEZRealPlayVi
      */
     private GoogleApiClient client;
     private List<CameraEntity.ItemsBean> mCameraList;
+    private UserEntity.ObjectEntity mUser;
 
     @Override
     protected void setUpContentView() {
@@ -335,7 +333,7 @@ public class EZRealPlayActivity extends ToolbarActivity implements IEZRealPlayVi
 
     @Override
     protected void setUpData() {
-
+        mUser = mPresenter.getRepositoriesManager().getUser().getObject();
     }
 
     @Override
@@ -344,8 +342,6 @@ public class EZRealPlayActivity extends ToolbarActivity implements IEZRealPlayVi
     }
 
     private void getCameraList() {
-//        GetCameraListOperation getCameraListOperation = new GetCameraListOperation();
-//        getCameraListOperation.startPostRequest(this);
         mPresenter.getCameraList();
     }
 
@@ -1151,44 +1147,41 @@ public class EZRealPlayActivity extends ToolbarActivity implements IEZRealPlayVi
     }
 
 
-    public void setCameraSuccess() {
+    public void setCameraSuccess(CameraEntity cameraEntity) {
         stopCusDialog();
-        /*
-        if (operation.getClass().equals(GetCameraListOperation.class)) {
-            GetCameraListOperation getCameraListOperation = (GetCameraListOperation) operation;
-            if (getCameraListOperation.mCameraList != null) {
-                User user = User.getCurrentUser();
-                Camera camera = null;
-                mEZOpenSDK = EZOpenSDK.getInstance();
-                mCameraList = new ArrayList<>();
-                mCameraList.addAll(getCameraListOperation.mCameraList);
 
-                if (6 == Role.RoleKindergartenLeader.getValue()) {
-                    camera = mCameraList.get(0);
-                } else if (2 == Role.RoleFirstTeacher.getValue() ||
-                        user.getMobileRole() == Role.RoleOtherParents.getValue() ||
-                        user.getMobileRole() == Role.RoleFirstParents.getValue() ||
-                        user.getMobileRole() == Role.RoleSecondTeacher.getValue()) {
-                    for (Camera c : mCameraList) {
-                        if (c.getClassroomId() != 0 && c.getClassroomId() > 0) {
-                            camera = c;
-                            return;
-                        }
+        List<CameraEntity.ItemsBean> items = cameraEntity.getItems();
+        if (items != null) {
+            CameraEntity.ItemsBean camera = null;
+            mEZOpenSDK = EZOpenSDK.getInstance();
+            mCameraList = new ArrayList<>();
+            mCameraList.addAll(items);
+
+            if (6 == C.Role.RoleKindergartenLeader) {
+                camera = mCameraList.get(0);
+            } else if (2 == C.Role.RoleFirstTeacher ||
+                    mUser.getMobileRole() == C.Role.RoleOtherParents ||
+                    mUser.getMobileRole() == C.Role.RoleFirstParents ||
+                    mUser.getMobileRole() == C.Role.RoleSecondTeacher) {
+                for (CameraEntity.ItemsBean c : mCameraList) {
+                    if (c.getClassroomId() != 0 && c.getClassroomId() > 0) {
+                        camera = c;
+                        return;
                     }
                 }
-                camera.setIsCheck(true);
-                mTvTitle.setText(camera.getName());
-                mEZOpenSDK.setAccessToken(camera.getAccessToken());
-                mCameraInfo = new EZCameraInfo();
-                mCameraInfo.setCameraId(camera.getCameraId());
-                mCameraInfo.setDeviceSerial(camera.getSerial());
-                mCameraInfo.setOnlineStatus(1);
-                mCameraInfo.setVideoLevel(1);
-                mStatus = RealPlayStatus.STATUS_INIT;
-                startPlay();
             }
+            camera.setCheck(true);
+            toolbar_title.setText(camera.getName());
+            mEZOpenSDK.setAccessToken(camera.getAccessToken());
+            mCameraInfo = new EZCameraInfo();
+            mCameraInfo.setCameraId(camera.getCameraId());
+            mCameraInfo.setDeviceSerial(camera.getSerial());
+            mCameraInfo.setOnlineStatus(1);
+            mCameraInfo.setVideoLevel(1);
+            mStatus = RealPlayStatus.STATUS_INIT;
+            startPlay();
+
         }
-        */
     }
 
     private void setFullPtzStartUI(boolean startAnim) {

@@ -15,6 +15,10 @@ public class EZRealPlayActivityPresenter {
     private IEZRealPlayView mIEZRealPlayView;
     private RepositoriesManager mRepositoriesManager;
 
+    public RepositoriesManager getRepositoriesManager() {
+        return mRepositoriesManager;
+    }
+
     public EZRealPlayActivityPresenter(IEZRealPlayView iezRealPlayView, RepositoriesManager repositoriesManager) {
         this.mIEZRealPlayView = iezRealPlayView;
         this.mRepositoriesManager = repositoriesManager;
@@ -29,7 +33,7 @@ public class EZRealPlayActivityPresenter {
 
             @Override
             public void onNext(CameraEntity cameraEntity) {
-                super.onNext(cameraEntity);
+                mIEZRealPlayView.setCameraSuccess(cameraEntity);
             }
         });
     }

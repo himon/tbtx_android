@@ -49,6 +49,7 @@ public abstract class ToolbarActivity extends BaseActivity implements Toolbar.On
         if (mode != MODE_NONE) {
             toolbar = (Toolbar) findViewById(R.id.toolbar);
             toolbar.setTitle("");
+            toolbar.setTitleTextColor(getResources().getColor(android.R.color.white));
             toolbar_title = (TextView) findViewById(R.id.toolbar_title);
 
             if (mode == MODE_BACK) {

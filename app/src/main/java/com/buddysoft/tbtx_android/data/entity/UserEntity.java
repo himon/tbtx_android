@@ -37,13 +37,13 @@ public class UserEntity extends BaseEntity {
         private String id;
         private String username;
         private String password;
-        private Object avatar;
+        private String avatar;
         private String kgroupId;
         private String kindergartenId;
         private String kclassId;
         private String type;
-        private String mobileRole;
-        private Object mobile;
+        private int mobileRole;
+        private String mobile;
         private String deleted;
         private String createdAt;
         private String updatedAt;
@@ -60,9 +60,6 @@ public class UserEntity extends BaseEntity {
             this.password = password;
         }
 
-        public void setAvatar(Object avatar) {
-            this.avatar = avatar;
-        }
 
         public void setKgroupId(String kgroupId) {
             this.kgroupId = kgroupId;
@@ -80,13 +77,6 @@ public class UserEntity extends BaseEntity {
             this.type = type;
         }
 
-        public void setMobileRole(String mobileRole) {
-            this.mobileRole = mobileRole;
-        }
-
-        public void setMobile(Object mobile) {
-            this.mobile = mobile;
-        }
 
         public void setDeleted(String deleted) {
             this.deleted = deleted;
@@ -112,9 +102,6 @@ public class UserEntity extends BaseEntity {
             return password;
         }
 
-        public Object getAvatar() {
-            return avatar;
-        }
 
         public String getKgroupId() {
             return kgroupId;
@@ -132,13 +119,6 @@ public class UserEntity extends BaseEntity {
             return type;
         }
 
-        public String getMobileRole() {
-            return mobileRole;
-        }
-
-        public Object getMobile() {
-            return mobile;
-        }
 
         public String getDeleted() {
             return deleted;
@@ -150,6 +130,30 @@ public class UserEntity extends BaseEntity {
 
         public String getUpdatedAt() {
             return updatedAt;
+        }
+
+        public String getAvatar() {
+            return avatar;
+        }
+
+        public void setAvatar(String avatar) {
+            this.avatar = avatar;
+        }
+
+        public int getMobileRole() {
+            return mobileRole;
+        }
+
+        public void setMobileRole(int mobileRole) {
+            this.mobileRole = mobileRole;
+        }
+
+        public String getMobile() {
+            return mobile;
+        }
+
+        public void setMobile(String mobile) {
+            this.mobile = mobile;
         }
     }
 }
