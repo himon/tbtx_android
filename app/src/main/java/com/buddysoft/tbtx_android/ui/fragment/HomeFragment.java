@@ -9,6 +9,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.ImageButton;
 import android.widget.ListView;
@@ -16,25 +17,22 @@ import android.widget.ListView;
 import com.bigkoo.convenientbanner.ConvenientBanner;
 import com.bigkoo.convenientbanner.listener.OnItemClickListener;
 import com.buddysoft.tbtx_android.R;
-import com.buddysoft.tbtx_android.app.TbtxApplication;
+import com.buddysoft.tbtx_android.app.C;
 import com.buddysoft.tbtx_android.data.entity.AdvertisementEntity;
 import com.buddysoft.tbtx_android.data.entity.AnnouncementEntity;
 import com.buddysoft.tbtx_android.ui.activity.MainActivity;
 import com.buddysoft.tbtx_android.ui.activity.album.AlbumListActivity;
 import com.buddysoft.tbtx_android.ui.activity.live.EZRealPlayActivity;
+import com.buddysoft.tbtx_android.ui.activity.webview.WebViewActivity;
 import com.buddysoft.tbtx_android.ui.adapter.CommonAdapter;
 import com.buddysoft.tbtx_android.ui.adapter.ViewHolder;
-import com.buddysoft.tbtx_android.ui.base.BaseFragment;
-import com.buddysoft.tbtx_android.ui.base.ToolbarActivity;
 import com.buddysoft.tbtx_android.ui.base.ToolbarFragment;
 import com.buddysoft.tbtx_android.ui.module.HomeFragmentModule;
-import com.buddysoft.tbtx_android.ui.module.MainActivityModule;
 import com.buddysoft.tbtx_android.ui.presenter.HomeFragmentPresenter;
 import com.buddysoft.tbtx_android.ui.view.IHomeView;
 import com.buddysoft.tbtx_android.util.BannerUtils;
 import com.buddysoft.tbtx_android.util.ListViewHeight;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -42,7 +40,6 @@ import javax.inject.Inject;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-
 
 
 /**
@@ -64,8 +61,9 @@ public class HomeFragment extends ToolbarFragment implements IHomeView, OnItemCl
     HomeFragmentPresenter mPresenter;
 
     private List<String> mImgList;
-    private List<AnnouncementEntity.ItemsEntity> mAdvertisementList;
+    private List<AnnouncementEntity.ItemsEntity> mAnnoucementList;
     private BaseAdapter mBaseAdapter;
+    private List<AdvertisementEntity.ItemsEntity> mAdvertiseList;
 
     public HomeFragment() {
         // Required empty public constructor
@@ -88,12 +86,12 @@ public class HomeFragment extends ToolbarFragment implements IHomeView, OnItemCl
 
     @Override
     protected void setUpView() {
-        mAdvertisementList = new ArrayList<>();
+        mAnnoucementList = new ArrayList<>();
         mImgList = new ArrayList<>();
         BannerUtils bannerUtils = new BannerUtils(getActivity(), convenientBanner, null, mImgList, this, 1);
         bannerUtils.init();
         convenientBanner.startTurning(2000);
-        mBaseAdapter = new CommonAdapter<AnnouncementEntity.ItemsEntity>(getActivity(), mAdvertisementList, R.layout.layout_announcement_item) {
+        mBaseAdapter = new CommonAdapter<AnnouncementEntity.ItemsEntity>(getActivity(), mAnnoucementList, R.layout.layout_announcement_item) {
             @Override
             public void convert(ViewHolder helper, AnnouncementEntity.ItemsEntity item) {
                 helper.setText(R.id.tv_title, item.getTitle());
@@ -102,7 +100,36 @@ public class HomeFragment extends ToolbarFragment implements IHomeView, OnItemCl
         };
         mListView.setAdapter(mBaseAdapter);
 
+        mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                AnnouncementEntity.ItemsEntity item = (AnnouncementEntity.ItemsEntity) parent.getAdapter().getItem(position);
+                toShow(item.getId());
+            }
+        });
+
+        convenientBanner.setOnItemClickListener(new OnItemClickListener() {
+            @Override
+            public void onItemClick(int position) {
+                AdvertisementEntity.ItemsEntity itemsEntity = mAdvertiseList.get(position);
+                toShowAdvert(itemsEntity.getId());
+            }
+        });
+
         initEvent();
+    }
+
+    private void toShowAdvert(String id) {
+        Intent intent = new Intent(getActivity(), WebViewActivity.class);
+        intent.putExtra(C.IntentKey.MESSAGE_EXTRA_KEY, "http://wsd-fe.bl99w.com/advertisement/app-view&id=" + id);
+        startActivity(intent);
+    }
+
+    private void toShow(String id) {
+
+        Intent intent = new Intent(getActivity(), WebViewActivity.class);
+        intent.putExtra(C.IntentKey.MESSAGE_EXTRA_KEY, "http://wsd-fe.bl99w.com/announcement/app-view&id=" + id);
+        startActivity(intent);
     }
 
     private void initEvent() {
@@ -127,6 +154,9 @@ public class HomeFragment extends ToolbarFragment implements IHomeView, OnItemCl
     public boolean onMenuItemClick(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.menu_map:
+                Intent intent = new Intent(getActivity(), WebViewActivity.class);
+                intent.putExtra(C.IntentKey.MESSAGE_EXTRA_KEY, "http://wsd-be.bl99w.com/index.php?r=kindergarten/app-index");
+                startActivity(intent);
                 break;
         }
         return true;
@@ -141,6 +171,7 @@ public class HomeFragment extends ToolbarFragment implements IHomeView, OnItemCl
     public void setAdvertisement(List<AdvertisementEntity.ItemsEntity> items) {
         mImgList.clear();
         if (items != null) {
+            mAdvertiseList = items;
             for (AdvertisementEntity.ItemsEntity item : items) {
                 mImgList.add(item.getCover());
             }
@@ -150,9 +181,9 @@ public class HomeFragment extends ToolbarFragment implements IHomeView, OnItemCl
 
     @Override
     public void setAnnouncement(List<AnnouncementEntity.ItemsEntity> items) {
-        mAdvertisementList.clear();
+        mAnnoucementList.clear();
         if (items != null) {
-            mAdvertisementList.addAll(items);
+            mAnnoucementList.addAll(items);
         }
         ListViewHeight.setListViewHeightBasedOnChildren(mListView);
         mBaseAdapter.notifyDataSetChanged();
@@ -160,7 +191,7 @@ public class HomeFragment extends ToolbarFragment implements IHomeView, OnItemCl
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.btn_album_list:
                 toAlbum();
                 break;

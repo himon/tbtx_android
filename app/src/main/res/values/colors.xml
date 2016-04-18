@@ -22,6 +22,12 @@
     <color name="black_font_text">#3D4346</color>
     <color name="blue_font_text">#2E91FB</color>
 
+    <color name="white">#FFFFFF</color>
+    <color name="grey">#808080</color>
+    <color name="black">#000000</color>
+    <color name="tab_gray">#ff999999</color>
+    <color name="tab_green">#ff45c01a</color>
+
     <!-- 选择城市位置添加color -->
     <color name="biz_plugin_weather_text1">#ff2f2f2f</color>
     <color name="base_main_bg_color">#fff0f0f0</color>
@@ -62,7 +68,6 @@
     <color name="text_hui">#BFBFBF</color>
     <color name="black5">#494A4C</color>
     <color name="green">#008000</color>
-    <color name="white">#FFFFFF</color>
     <color name="gray">#808080</color>
     <color name="qian_hui3">#D4D4D4</color>
     <color name="font_red">#DB2023</color>

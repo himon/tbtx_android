@@ -49,24 +49,24 @@ public class RepositoriesManager {
 
     public Observable<AnnouncementEntity> getAnnouncementList() {
 
-        String classId = "";
-        String kindergartenId = "";
-
-        switch (mUser.getObject().getMobileRole()) {
-            case C.Role.RoleFirstParents:
-            case C.Role.RoleOtherParents:
-            case C.Role.RoleFirstTeacher:
-            case C.Role.RoleSecondTeacher:
-                classId = mUser.getObject().getKclassId();
-                break;
-            case C.Role.RoleKindergartenLeader:
-            case C.Role.RoleNurse:
-            case C.Role.RoleAdministrationTeacher:
-            case C.Role.RoleOtherTeacher:
-                kindergartenId = mUser.getObject().getKindergartenId();
-                break;
-        }
-        return mLiveApi.announcement(classId, kindergartenId, C.LimitType.LATEST)
+//        String classId = "";
+//        String kindergartenId = "";
+//
+//        switch (mUser.getObject().getMobileRole()) {
+//            case C.Role.RoleFirstParents:
+//            case C.Role.RoleOtherParents:
+//            case C.Role.RoleFirstTeacher:
+//            case C.Role.RoleSecondTeacher:
+//                classId = mUser.getObject().getKclassId();
+//                break;
+//            case C.Role.RoleKindergartenLeader:
+//            case C.Role.RoleNurse:
+//            case C.Role.RoleAdministrationTeacher:
+//            case C.Role.RoleOtherTeacher:
+//                kindergartenId = mUser.getObject().getKindergartenId();
+//                break;
+//        }
+        return mLiveApi.announcement("0", C.LimitType.LATEST)
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread());
     }

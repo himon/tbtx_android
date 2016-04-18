@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">tbtx_android</string>
 
+    <string name="title_recycler_activity">我在Activity</string>
+
     <string name="host_url">http://wsd-fe.bl99w.com/</string>
 
     <string name="cancel">取消</string>

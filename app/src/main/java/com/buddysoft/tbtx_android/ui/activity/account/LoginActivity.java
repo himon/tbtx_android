@@ -72,6 +72,7 @@ public class LoginActivity extends ToolbarActivity implements ILoginView, View.O
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_login:
+                waittingDialog();
                 mPresenter.login(mEtUser.getText().toString(), mEtPassword.getText().toString());
                 break;
         }
@@ -79,6 +80,7 @@ public class LoginActivity extends ToolbarActivity implements ILoginView, View.O
 
     @Override
     public void toMainActivity() {
+        stopCusDialog();
         Intent intent = new Intent(this, MainActivity.class);
         startActivity(intent);
     }

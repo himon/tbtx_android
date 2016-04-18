@@ -64,6 +64,7 @@ public class AlbumPhotoDetailActivity extends ToolbarActivity implements IAlbumP
     private boolean isPraise = false;
     private UserEntity.ObjectEntity mUser;
     private String commentId = "";
+    private PhotoDetailCommentEntity.ItemsEntity mCurrentDelitem;
 
     @Override
     protected void setUpContentView() {
@@ -92,12 +93,12 @@ public class AlbumPhotoDetailActivity extends ToolbarActivity implements IAlbumP
         mListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                PhotoDetailCommentEntity.ItemsEntity item = (PhotoDetailCommentEntity.ItemsEntity) parent.getAdapter().getItem(position);
-                if(item.getOperatorId().equals(mUser.getId())){
-                    commentDelPopup(item.getCommentId());
+                mCurrentDelitem = (PhotoDetailCommentEntity.ItemsEntity) parent.getAdapter().getItem(position);
+                if(mCurrentDelitem.getOperatorId().equals(mUser.getId())){
+                    commentDelPopup(mCurrentDelitem.getId());
                 }else{
-                    mEtCommit.setHint("回复" + item.getPublisher().getName() + ":");
-                    commentId = item.getOperatorId();
+                    mEtCommit.setHint("回复" + mCurrentDelitem.getPublisher().getName() + ":");
+                    commentId = mCurrentDelitem.getOperatorId();
                 }
             }
         });
@@ -196,7 +197,9 @@ public class AlbumPhotoDetailActivity extends ToolbarActivity implements IAlbumP
 
     @Override
     public void setDelCommentSuccess(BaseEntity entity) {
-
+        mList.remove(mCurrentDelitem);
+        ListViewHeight.setListViewHeightBasedOnChildren(mListView);
+        mBaseAdapter.notifyDataSetChanged();
     }
 
     @Override
@@ -225,7 +228,6 @@ public class AlbumPhotoDetailActivity extends ToolbarActivity implements IAlbumP
     private void popup() {
         mWindows = new AlbumPhotoShowWindows(this, toolbar, 0);
         mWindows.setOperationInterface(new AlbumPhotoShowWindows.OperationInterface() {
-
 
             @Override
             public void shareWechat() {

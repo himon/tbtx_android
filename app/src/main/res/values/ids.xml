@@ -17,4 +17,10 @@
 
 <resources>
     <item name="adapter_item_tag_key" type="id"/>
+
+    <item name="toolbar" type="id" />
+    <item name="toolbar_title" type="id" />
+    <item name="swipeRefreshLayout" type="id" />
+    <item name="recyclerView" type="id" />
+    <item name="pullRecycler" type="id" />
 </resources>

@@ -47,7 +47,7 @@ public interface LiveApi {
      */
     @FormUrlEncoded
     @POST("announcement/index")
-    Observable<AnnouncementEntity> announcement(@Field("classId") String classId, @Field("kindergartenId") String kindergartenId, @Field("limit") String limit);
+    Observable<AnnouncementEntity> announcement(@Field("classId") String classId, @Field("limit") String limit);
 
     /**
      * 查询相册

@@ -1,6 +1,7 @@
 package com.buddysoft.tbtx_android.ui.activity.album;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -10,8 +11,12 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.buddysoft.tbtx_android.R;
 import com.buddysoft.tbtx_android.app.C;
@@ -20,13 +25,18 @@ import com.buddysoft.tbtx_android.data.entity.AlbumDetailEntity;
 import com.buddysoft.tbtx_android.data.entity.BaseEntity;
 import com.buddysoft.tbtx_android.data.event.AlbumPhotoEvent;
 import com.buddysoft.tbtx_android.data.event.AlbumSearchEvent;
+import com.buddysoft.tbtx_android.ui.activity.MainActivity;
+import com.buddysoft.tbtx_android.ui.adapter.AlbumDetailAdapter;
+import com.buddysoft.tbtx_android.ui.adapter.GridAdapter;
 import com.buddysoft.tbtx_android.ui.base.BaseListActivity;
 import com.buddysoft.tbtx_android.ui.base.ToolbarActivity;
 import com.buddysoft.tbtx_android.ui.module.AlbumDetailActivityModule;
 import com.buddysoft.tbtx_android.ui.presenter.AlbumDetailActivityPresenter;
 import com.buddysoft.tbtx_android.ui.view.IAlbumDetailView;
+import com.buddysoft.tbtx_android.util.ListViewHeight;
 import com.buddysoft.tbtx_android.util.loader.GlideImageLoader;
 import com.buddysoft.tbtx_android.util.loader.GlidePauseOnScrollListener;
+import com.buddysoft.tbtx_android.widgets.RefreshLayout;
 import com.buddysoft.tbtx_android.widgets.popup.AlbumDetailWindows;
 import com.buddysoft.tbtx_android.widgets.popup.SearchAlbumWindows;
 import com.buddysoft.tbtx_android.widgets.pull.BaseViewHolder;
@@ -34,6 +44,9 @@ import com.buddysoft.tbtx_android.widgets.pull.PullRecycler;
 import com.buddysoft.tbtx_android.widgets.pull.layoutmanager.ILayoutManager;
 import com.buddysoft.tbtx_android.widgets.pull.layoutmanager.MyGridLayoutManager;
 import com.bumptech.glide.Glide;
+import com.google.android.gms.appindexing.Action;
+import com.google.android.gms.appindexing.AppIndex;
+import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.gson.JsonObject;
 import com.upyun.library.common.Params;
 import com.upyun.library.common.UploadManager;
@@ -47,7 +60,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.File;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -55,6 +70,8 @@ import java.util.UUID;
 
 import javax.inject.Inject;
 
+import butterknife.Bind;
+import butterknife.ButterKnife;
 import cn.finalteam.galleryfinal.CoreConfig;
 import cn.finalteam.galleryfinal.FunctionConfig;
 import cn.finalteam.galleryfinal.GalleryFinal;
@@ -67,7 +84,12 @@ import de.greenrobot.event.EventBus;
 /**
  * 相册详情
  */
-public class AlbumDetailActivity extends BaseListActivity<AlbumDetailEntity.ItemsEntity> implements IAlbumDetailView {
+public class AlbumDetailActivity extends ToolbarActivity implements IAlbumDetailView {
+
+    @Bind(R.id.swipe_layout)
+    RefreshLayout mRefreshLayout;
+    @Bind(R.id.listview)
+    ListView mListView;
 
     private static final String TAG = "AlbumDetailActivity";
     private final int REQUEST_CODE_CAMERA = 1000;
@@ -78,14 +100,22 @@ public class AlbumDetailActivity extends BaseListActivity<AlbumDetailEntity.Item
     private AlbumDetailWindows mWindows;
     private List<PhotoInfo> mPhotoList;
     private List<String> mUrl = new ArrayList<>();
+    private ArrayList<AlbumDetailEntity.ItemsEntity> mDataList = new ArrayList<>();
+    private GridAdapter mAdapter;
 
     @Inject
     AlbumDetailActivityPresenter mPresenter;
     private FunctionConfig mFunctionConfig;
+    /**
+     * ATTENTION: This was auto-generated to implement the App Indexing API.
+     * See https://g.co/AppIndexing/AndroidStudio for more information.
+     */
+    private GoogleApiClient client;
 
     @Override
     protected void setUpContentView() {
-        super.setUpContentView();
+        setContentView(R.layout.activity_album_detail);
+        ButterKnife.bind(this);
         EventBus.getDefault().register(this);
         Intent intent = getIntent();
         if (intent != null) {
@@ -98,9 +128,46 @@ public class AlbumDetailActivity extends BaseListActivity<AlbumDetailEntity.Item
     }
 
     @Override
+    protected void setUpView() {
+        final AlbumDetailAdapter adapter = new AlbumDetailAdapter(this,
+                mDataList);
+        mAdapter = new GridAdapter<AlbumDetailAdapter>(this, adapter);
+        mAdapter.setNumColumns(2);
+        mAdapter.setOnItemClickListener(new GridAdapter.OnGridItemClickListener() {
+            @Override
+            public void onItemClick(int pos, int realPos) {
+                AlbumDetailEntity.ItemsEntity itemsEntity = mDataList.get(pos);
+                toPhotoDetail(itemsEntity);
+            }
+        });
+        mListView.setAdapter(mAdapter);
+        // 设置下拉刷新时的颜色值,颜色值需要定义在xml中
+        mRefreshLayout.setColorSchemeResources(android.R.color.holo_blue_light, android.R.color.holo_red_light, android.R.color.holo_orange_light, android.R.color.holo_green_light);
+
+        initEvent();
+    }
+
+    private void initEvent() {
+        // 设置下拉刷新监听器
+        mRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                mPresenter.getAlbumPhoto(mAlbumId);
+            }
+        });
+
+        // 加载监听器
+        mRefreshLayout.setOnLoadListener(new RefreshLayout.OnLoadListener() {
+            @Override
+            public void onLoad() {
+                mPresenter.getAlbumPhoto(mAlbumId);
+            }
+        });
+    }
+
+    @Override
     protected void setUpData() {
-        super.setUpData();
-        recycler.setRefreshing();
+        mPresenter.getAlbumPhoto(mAlbumId);
     }
 
     @Override
@@ -108,45 +175,23 @@ public class AlbumDetailActivity extends BaseListActivity<AlbumDetailEntity.Item
         super.setUpMenu(R.menu.menu_album_detail);
     }
 
-    @Override
-    protected BaseViewHolder getViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.adapter_album_detail_item, parent, false);
-        return new SampleViewHolder(view);
-    }
-
-    @Override
-    protected ILayoutManager getLayoutManager() {
-        return new MyGridLayoutManager(getApplicationContext(), 2);
-    }
-
-    @Override
-    protected RecyclerView.ItemDecoration getItemDecoration() {
-        return null;
-    }
 
     @Override
     protected void setupActivityComponent() {
         TbtxApplication.get(this).getUserComponent().plus(new AlbumDetailActivityModule(this)).inject(this);
     }
 
-    @Override
-    public void onRefresh(int action) {
-        if(mDataList == null){
-            mDataList = new ArrayList<>();
-        }
-        if(action == PullRecycler.ACTION_PULL_TO_REFRESH){
-            mDataList.clear();
-        }
-        mPresenter.getAlbumPhoto(mAlbumId);
-    }
 
     @Override
     public void setDetail(AlbumDetailEntity albumDetailEntity) {
         if (albumDetailEntity.getItems() != null) {
+            mDataList.clear();
             mDataList.addAll(albumDetailEntity.getItems());
-            adapter.notifyDataSetChanged();
+            mAdapter.notifyDataSetChanged();
         }
-        recycler.onRefreshCompleted();
+        mRefreshLayout.setRefreshing(false);
+        // 加载完后调用该方法
+        mRefreshLayout.setLoading(false);
     }
 
     @Override
@@ -156,7 +201,7 @@ public class AlbumDetailActivity extends BaseListActivity<AlbumDetailEntity.Item
 
     @Override
     public void setUploadSuccess(BaseEntity baseEntity) {
-        recycler.onRefresh();
+        mPresenter.getAlbumPhoto(mAlbumId);
     }
 
     class SampleViewHolder extends BaseViewHolder {
@@ -190,9 +235,9 @@ public class AlbumDetailActivity extends BaseListActivity<AlbumDetailEntity.Item
 
     private void toPhotoDetail(AlbumDetailEntity.ItemsEntity item) {
         int i;
-        for(i = 0; i < mDataList.size(); i++){
+        for (i = 0; i < mDataList.size(); i++) {
             AlbumDetailEntity.ItemsEntity entity = mDataList.get(i);
-            if(entity.getId().equals(item.getId())){
+            if (entity.getId().equals(item.getId())) {
                 break;
             }
         }
@@ -214,7 +259,7 @@ public class AlbumDetailActivity extends BaseListActivity<AlbumDetailEntity.Item
     }
 
     private void popup() {
-        mWindows = new AlbumDetailWindows(this, recycler);
+        mWindows = new AlbumDetailWindows(this, mRefreshLayout);
         mWindows.setOperationInterface(new AlbumDetailWindows.OperationInterface() {
 
             @Override
@@ -326,7 +371,7 @@ public class AlbumDetailActivity extends BaseListActivity<AlbumDetailEntity.Item
                 } catch (JSONException e) {
                     e.printStackTrace();
                 }
-                if(mUrl.size() == mPhotoList.size()){
+                if (mUrl.size() == mPhotoList.size()) {
                     mPresenter.uploadPhoto(mAlbumId, mUrl);
                 }
             }

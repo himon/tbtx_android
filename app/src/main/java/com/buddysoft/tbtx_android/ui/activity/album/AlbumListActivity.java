@@ -86,7 +86,7 @@ public class AlbumListActivity extends ToolbarActivity implements IAlbumListView
 
     @Override
     protected void setUpData() {
-
+        mPresenter.getAlbumList("", "");
     }
 
     @Override
